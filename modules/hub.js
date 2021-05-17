@@ -14,14 +14,15 @@ exports.new_hub = function() {
 let hub_props = {
 
 	open: function(filepath) {
+		let roots;
 		try {
 			let buf = fs.readFileSync(filepath);
-			let roots = load_sgf(buf);
-			tree_draw(roots[0]);
+			roots = load_sgf(buf);
 		} catch (err) {
 			alert(err);
 			return;
 		}
+		tree_draw(roots[0]);
 	},
 
 	set: function(key, value) {
