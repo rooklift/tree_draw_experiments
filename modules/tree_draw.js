@@ -14,31 +14,37 @@ module.exports = function(root) {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	ctx.fillStyle = "#4ba28bff";
-
 	let reservations = [];
 	reserver(root, reservations);
 
-	for (let y = 0; y < reservations.length; y++) {
+	__draw(root, ctx);
+};
 
-		for (let n = 0; n < reservations[y].length; n++) {
+function __draw(node, ctx) {
 
-			let o = reservations[y][n];
+	ctx.fillStyle = "#4ba28bff";
 
-			let x = o[0];
+	while (true) {
 
-			let gx = x * 16 + 16;
-			let gy = y * 16 + 16;
+		let gx = node.graphx * 16 + 16;
+		let gy = node.depth * 16 + 16;
 
-			ctx.beginPath();
-			ctx.arc(gx, gy, 3, 0, 2 * Math.PI);
-			ctx.fill();
+		ctx.beginPath();
+		ctx.arc(gx, gy, 3, 0, 2 * Math.PI);
+		ctx.fill();
+
+		if (node.children.length > 1) {
+			for (let child of node.children) {
+				__draw(child, ctx);
+			}
+			break;
+		} else if (node.children.length === 1) {
+			node = node.children[0];
+			continue;
+		} else {
+			break;
 		}
 	}
-
-	console.log(`Draw took ${performance.now() - start_time} ms`);
-
-	return;
 };
 
 function reserver(local_root, reservations) {			// Reservations is an array of format [y] --> list of [x, node]
@@ -84,6 +90,7 @@ function reserver(local_root, reservations) {			// Reservations is an array of f
 			reservations[y] = [];
 		}
 		reservations[node.depth].push([main_line_x, node]);
+		node.graphx = main_line_x;
 		if (node.children.length === 0) {
 			break;
 		} else if (node.children.length >= 2) {
