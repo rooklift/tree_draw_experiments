@@ -105,6 +105,9 @@ function menu_build() {
 					}
 				},
 				{
+					type: "separator",
+				},
+				{
 					label: "Open SGF...",
 					accelerator: "CommandOrControl+O",
 					click: () => {
