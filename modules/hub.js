@@ -8,6 +8,7 @@ const tree_draw = require("./tree_draw");
 
 exports.new_hub = function() {
 	let hub = Object.create(hub_props);
+	hub.root = null;
 	return hub;
 };
 
@@ -22,7 +23,12 @@ let hub_props = {
 			alert(err);
 			return;
 		}
-		tree_draw(roots[0]);
+		this.root = roots[0];
+		this.draw();
+	},
+
+	draw: function() {
+		tree_draw(this.root);
 	},
 
 	set: function(key, value) {

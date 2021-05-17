@@ -118,6 +118,12 @@ function menu_build() {
 					}
 				},
 				{
+					label: "Redraw",
+					click: () => {
+						win.webContents.send("call", "draw");
+					}
+				},
+				{
 					type: "separator",
 				},
 				{

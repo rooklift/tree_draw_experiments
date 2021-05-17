@@ -2,6 +2,12 @@
 
 module.exports = function(root) {
 
+	if (!root) {
+		return;
+	}
+
+	let start_time = performance.now();
+
 	let canvas = document.getElementById("canvas");
 	let ctx = canvas.getContext("2d");
 
@@ -29,6 +35,8 @@ module.exports = function(root) {
 			ctx.fill();
 		}
 	}
+
+	console.log(`Draw took ${performance.now() - start_time} ms`);
 
 	return;
 };
