@@ -31,20 +31,13 @@ module.exports = function(root) {
 	}
 
 	return;
-}
+};
 
-// Perhaps the strategy is:
-//
-//		- When given a (local) root node, traverse the main line and find the x location for the whole line (the rightmost x necessary)
-//		- Set all the nodes in the main line to that x
-//		- Starting at the bottom, perform the above on each non-main-line node.
+function reserver(local_root, reservations) {			// Reservations is an array of format [y] --> list of [x, node]
 
-function reserver(local_root, reservations) {
-
-	// Reservations is an array of format [y] --> list of [x, node]
+	// Traverse the main line and find the x location for the whole line (the rightmost x necessary)
 
 	let main_line_x = 0;
-
 	let node = local_root;
 
 	while (true) {
@@ -61,8 +54,20 @@ function reserver(local_root, reservations) {
 		node = node.children[0];
 	}
 
-	node = local_root;
+	// As some special sauce, pretend the line is 1 longer than it is...
 
+	let y = node.depth + 1;
+	if (reservations[y]) {
+		let rightmost = reservations[y][reservations[y].length - 1][0];
+		if (rightmost >= main_line_x) {
+			main_line_x = rightmost + 1;
+		}
+	}
+
+	// Set all the nodes in the main line to that x...
+	// Make a list of subtrees that need handling...
+
+	node = local_root;
 	let subtree_roots = [];
 
 	while (true) {
@@ -84,10 +89,10 @@ function reserver(local_root, reservations) {
 
 	subtree_roots.reverse();
 
+	// Handle the subtrees...
+
 	for (let child of subtree_roots) {
 		reserver(child, reservations);
 	}
-
-	return;
 }
 
