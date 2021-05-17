@@ -14,9 +14,7 @@ module.exports = function(root) {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	let reservations = [];
-	reserver(root, reservations);
-
+	reserver(root, []);
 	__draw(root, ctx);
 };
 
@@ -47,7 +45,7 @@ function __draw(node, ctx) {
 	}
 };
 
-function reserver(local_root, reservations) {			// Reservations is an array of format [y] --> list of [x, node]
+function reserver(local_root, reservations) {
 
 	// Traverse the main line and find the x location for the whole line (the rightmost x necessary)
 
@@ -56,11 +54,8 @@ function reserver(local_root, reservations) {			// Reservations is an array of f
 
 	while (true) {
 		let y = node.depth;
-		if (reservations[y]) {
-			let rightmost = reservations[y][reservations[y].length - 1][0];
-			if (rightmost >= main_line_x) {
-				main_line_x = rightmost + 1;
-			}
+		if (reservations[y] !== undefined && reservations[y] >= main_line_x) {
+			main_line_x = reservations[y] + 1;
 		}
 		if (node.children.length === 0) {
 			break;
@@ -71,11 +66,8 @@ function reserver(local_root, reservations) {			// Reservations is an array of f
 	// As some special sauce, pretend the line is 1 longer than it is...
 
 	let y = node.depth + 1;
-	if (reservations[y]) {
-		let rightmost = reservations[y][reservations[y].length - 1][0];
-		if (rightmost >= main_line_x) {
-			main_line_x = rightmost + 1;
-		}
+	if (reservations[y] !== undefined && reservations[y] >= main_line_x) {
+		main_line_x = reservations[y] + 1;
 	}
 
 	// Set all the nodes in the main line to that x...
@@ -85,11 +77,7 @@ function reserver(local_root, reservations) {			// Reservations is an array of f
 	let subtree_roots = [];
 
 	while (true) {
-		let y = node.depth;
-		if (!reservations[y]) {
-			reservations[y] = [];
-		}
-		reservations[node.depth].push([main_line_x, node]);
+		reservations[node.depth] = main_line_x;
 		node.graphx = main_line_x;
 		if (node.children.length === 0) {
 			break;
